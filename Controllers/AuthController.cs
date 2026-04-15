@@ -70,6 +70,7 @@ public class AuthController : Controller
      {
         "Student"    => RedirectToAction("Index", "Student"),
         "Supervisor" => RedirectToAction("Index", "Supervisor"),
+         "ModuleLeader" => RedirectToAction("Index", "ModuleLeader"),
         "Admin"      => RedirectToAction("Index", "Admin"),
         _            => RedirectToAction("Login")
      };

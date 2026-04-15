@@ -1,0 +1,27 @@
+@model BlindMatchPAS.ViewModels.RegisterViewModel
+
+<h2>Register</h2>
+
+<form method="post" asp-controller="Auth" asp-action="Register">
+
+    <input asp-for="FullName" placeholder="Full Name" />
+    <br />
+
+    <input asp-for="Email" placeholder="Email" />
+    <br />
+
+    <input asp-for="Password" type="password" placeholder="Password" />
+    <br />
+
+    <select asp-for="Role">
+        <option value="Student">Student</option>
+        <option value="Supervisor">Supervisor</option>
+        <option value="Admin">Admin</option>
+        
+    </select>
+
+    <br />
+
+    <button type="submit">Register</button>
+
+</form>

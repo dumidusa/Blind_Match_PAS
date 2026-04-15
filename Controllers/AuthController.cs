@@ -7,6 +7,8 @@ using BlindMatchPAS.ViewModels;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using BlindMatchPAS.Models;
+
 namespace BlindMatchPAS.Controllers;
 
 public class AuthController : Controller
@@ -85,5 +87,40 @@ public class AuthController : Controller
     {
     return View();
     }
+
+//rejister
+   [AllowAnonymous]
+   public IActionResult Register()
+      {
+     return View();
+      }
+
+   [AllowAnonymous]
+   [HttpPost]
+   public async Task<IActionResult> Register(RegisterViewModel model)
+   {
+    // check if email already exists
+    var exists = await _context.Users
+        .AnyAsync(x => x.Email == model.Email);
+
+    if (exists)
+    {
+        ModelState.AddModelError("", "Email already exists");
+        return View(model);
+    }
+
+    var user = new User
+    {
+        FullName = model.FullName,
+        Email = model.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
+        Role = model.Role
+    };
+
+    _context.Users.Add(user);
+    await _context.SaveChangesAsync();
+
+    return RedirectToAction("Login");
+   }
 }
 

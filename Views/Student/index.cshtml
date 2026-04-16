@@ -1,0 +1,48 @@
+@model IEnumerable<BLIND_MATCH_PAS.Models.StudentProject>
+
+<h2>My Project Proposals</h2>
+<a asp-action="Create" class="btn btn-primary mb-3">+ Submit New Proposal</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Research Area</th>
+            <th>Status</th>
+            <th>Supervisor (Revealed)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.Title</td>
+            <td>@p.ResearchArea</td>
+            <td><span class="badge bg-info">@p.Status</span></td>
+            <td>
+                @if (p.Status == BLIND_MATCH_PAS.Models.ProjectStatus.Matched && p.Supervisor != null)
+                {
+                    <strong>@p.Supervisor.FullName</strong><br/>
+                    <small>@p.Supervisor.Email</small>
+                }
+                else
+                {
+                    <span class="text-muted">Not revealed yet</span>
+                }
+            </td>
+            <td>
+                @if (p.Status != BLIND_MATCH_PAS.Models.ProjectStatus.Matched)
+                {
+                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <form asp-action="Withdraw" asp-route-id="@p.Id" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Withdraw this proposal?')">Withdraw</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

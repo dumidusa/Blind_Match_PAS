@@ -1,0 +1,27 @@
+@model YourAppName.Models.StudentProject
+
+<h2>Submit New Proposal</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Abstract" class="form-label"></label>
+        <textarea asp-for="Abstract" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Abstract" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="TechnicalStack" class="form-label"></label>
+        <input asp-for="TechnicalStack" class="form-control" placeholder="e.g. React, Node.js, MongoDB" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="ResearchArea" class="form-label"></label>
+        <input asp-for="ResearchArea" class="form-control" placeholder="e.g. Artificial Intelligence" />
+    </div>
+    <button type="submit" class="btn btn-success">Submit Proposal</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

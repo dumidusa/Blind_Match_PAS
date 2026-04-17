@@ -1,0 +1,175 @@
+@model List<BlindMatchPAS.Models.User>
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string[] roles = { "Student", "Supervisor", "ModuleLeader" };
+}
+
+<div class="container mx-auto px-4 py-8 max-w-7xl font-sans">
+    
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b border-gray-200 pb-4 gap-4">
+        <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+             User Management
+        </h2>
+        <a asp-action="Index" class="text-sm font-medium text-gray-600 hover:text-orange-600 bg-white hover:bg-orange-50 px-4 py-2 rounded-lg transition-colors border border-gray-200 shadow-sm flex items-center gap-2">
+            <span>←</span> Back to Dashboard
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-r-lg mb-6 flex justify-between items-center shadow-sm" role="alert">
+            <span class="block sm:inline font-medium">@TempData["Success"]</span>
+            <button type="button" class="text-green-700 hover:text-green-900 text-xl font-bold leading-none focus:outline-none" onclick="this.parentElement.style.display='none'">
+                &times;
+            </button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg mb-6 flex justify-between items-center shadow-sm" role="alert">
+            <span class="block sm:inline font-medium">@TempData["Error"]</span>
+            <button type="button" class="text-red-700 hover:text-red-900 text-xl font-bold leading-none focus:outline-none" onclick="this.parentElement.style.display='none'">
+                &times;
+            </button>
+        </div>
+    }
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
+        <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+            <h3 class="font-semibold text-gray-800 text-lg">Create New Account</h3>
+        </div>
+        <div class="p-6">
+            <form asp-action="CreateUser" method="post">
+                @Html.AntiForgeryToken()
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                        <input type="text" name="FullName" class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2.5 px-3 border bg-white"
+                               placeholder="e.g. John Silva" required maxlength="100" />
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input type="email" name="Email" class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2.5 px-3 border bg-white"
+                               placeholder="user@example.com" required />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                        <input type="password" name="Password" class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2.5 px-3 border bg-white"
+                               placeholder="Min. 6 chars" required minlength="6" />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                        <select name="Role" class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2.5 px-3 border bg-white" required>
+                            <option value="">-- Select --</option>
+                            @foreach (var r in roles)
+                            {
+                                <option value="@r">@r</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-orange-500 border border-orange-500 rounded-lg hover:bg-orange-600 transition-colors shadow-sm">
+                            Create
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <form method="get" asp-action="UserManagement" class="flex flex-col md:flex-row gap-3 mb-6 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+        <div class="flex-grow md:w-1/3">
+            <input type="text" name="search" value="@ViewBag.Search"
+                   class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2 px-3 border bg-white" 
+                   placeholder="Search name or email..." />
+        </div>
+        <div class="md:w-1/4">
+            <select name="role" class="w-full border-gray-300 text-gray-700 rounded-lg shadow-sm focus:ring-orange-500 focus:border-orange-500 text-sm py-2 px-3 border bg-white">
+                <option value="">All Roles</option>
+                @foreach (var r in roles)
+                {
+                    if (ViewBag.FilterRole == r)
+                    {
+                        <option value="@r" selected>@r</option>
+                    }
+                    else
+                    {
+                        <option value="@r">@r</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="flex gap-2 md:w-auto">
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors">
+                Filter
+            </button>
+            <a asp-action="UserManagement" class="px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-center">
+                Reset
+            </a>
+        </div>
+    </form>
+
+    <div class="flex items-center justify-between mb-4">
+        <h4 class="text-lg font-semibold text-gray-800">Users (@Model.Count)</h4>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="bg-white border border-gray-200 text-gray-500 px-6 py-8 rounded-xl shadow-sm text-center italic">
+            No users found matching your filter.
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+            <table class="min-w-full text-left border-collapse">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Full Name</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">Role</th>
+                        <th class="py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var u in Model)
+                    {
+                        <tr class="hover:bg-orange-50/50 transition-colors duration-150 group">
+                            <td class="py-4 px-6 align-middle">
+                                <span class="text-gray-800 font-medium text-sm">@u.FullName</span>
+                            </td>
+                            <td class="py-4 px-6 align-middle text-gray-600 text-sm">
+                                @u.Email
+                            </td>
+                            <td class="py-4 px-6 align-middle">
+                                @{
+                                    var badgeClass = u.Role switch
+                                    {
+                                        "Student" => "bg-blue-100 text-blue-800 border-blue-200",
+                                        "Supervisor" => "bg-green-100 text-green-800 border-green-200",
+                                        "ModuleLeader" => "bg-red-100 text-red-800 border-red-200",
+                                        _ => "bg-gray-100 text-gray-800 border-gray-200"
+                                    };
+                                }
+                                <span class="inline-block text-xs font-semibold px-2.5 py-1 rounded-md border @badgeClass">
+                                    @u.Role
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 align-middle text-right">
+                                <form asp-action="DeleteUser" method="post" class="inline-block"
+                                      onsubmit="return confirm('Delete user \'@u.FullName\'? This cannot be undone.');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@u.Id" />
+                                    <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-white border border-red-200 rounded-lg hover:text-white hover:bg-red-500 hover:border-red-500 transition-colors shadow-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

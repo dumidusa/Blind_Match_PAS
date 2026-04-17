@@ -1,27 +1,191 @@
-@model BlindMatchPAS.ViewModels.RegisterViewModel
+ @model BlindMatchPAS.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["HideNav"] = true;
+}
+<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-slate-50 via-brand-50/30 to-slate-100">
 
-<h2>Register</h2>
+    <div class="pointer-events-none fixed inset-0 overflow-hidden -z-10" aria-hidden="true">
+        <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-violet-200/30 blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-brand-200/20 blur-3xl"></div>
+    </div>
 
-<form method="post" asp-controller="Auth" asp-action="Register">
+    <div class="w-full max-w-md">
 
-    <input asp-for="FullName" placeholder="Full Name" />
-    <br />
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100 px-8 py-10">
 
-    <input asp-for="Email" placeholder="Email" />
-    <br />
+            <div class="mb-8 text-center">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 shadow-glass mb-4">
+                    <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Create account</h1>
+                <p class="text-slate-500 text-sm mt-1">Join BlindMatch PAS — Project Allocation System</p>
+            </div>
 
-    <input asp-for="Password" type="password" placeholder="Password" />
-    <br />
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="mb-5 flex items-start gap-3 p-4 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-sm">
+                    <svg class="w-5 h-5 mt-0.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <div asp-validation-summary="All" class="space-y-1"></div>
+                </div>
+            }
 
-    <select asp-for="Role">
-        <option value="Student">Student</option>
-        <option value="Supervisor">Supervisor</option>
-        <option value="ModuleLeader">Module Leader</option>
-        <option value="Admin">Admin</option>
-    </select>
+            <form asp-controller="Auth" asp-action="Register" method="post" class="space-y-5">
+                @Html.AntiForgeryToken()
 
-    <br />
+                <div>
+                    <label asp-for="FullName" class="block text-sm font-medium text-slate-700 mb-1.5">Full name</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <input asp-for="FullName" type="text" autocomplete="name"
+                               placeholder="Jane Smith"
+                               class="block w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-rose-600 text-xs mt-1 block"></span>
+                </div>
 
-    <button type="submit">Register</button>
-    <a href="/Auth/Login">Already have an account? Login here.</a>
-</form>
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                            </svg>
+                        </div>
+                        <input asp-for="Email" type="email" autocomplete="email"
+                               placeholder="you@university.ac.uk"
+                               class="block w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-rose-600 text-xs mt-1 block"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Password" class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <input asp-for="Password" type="password" id="regPassword" autocomplete="new-password"
+                               placeholder="Min. 6 characters"
+                               class="block w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-12 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" />
+                        <button type="button" id="toggleRegPwd"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600">
+                            <svg id="regEyeOpen" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div id="strengthBar" class="h-full rounded-full transition-all duration-300 w-0 bg-slate-300"></div>
+                    </div>
+                    <p id="strengthText" class="text-xs text-slate-400 mt-1"></p>
+                    <span asp-validation-for="Password" class="text-rose-600 text-xs mt-1 block"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Role" class="block text-sm font-medium text-slate-700 mb-1.5">Role</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                            </svg>
+                        </div>
+                        <select asp-for="Role"
+                                class="block w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-10 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition cursor-pointer">
+                            <option value="Student"> Student</option>
+                            <option value="Supervisor"> Supervisor</option>
+                            <option value="ModuleLeader">  Module Leader</option>
+                            <option value="Admin"> Admin</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="roleDesc" class="text-xs text-slate-500 mt-1.5 pl-1"></p>
+                </div>
+
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-4 text-sm transition-all duration-200 active:scale-[0.98] shadow-sm mt-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                    Create my account
+                </button>
+            </form>
+
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
+                <div class="relative flex justify-center">
+                    <span class="bg-white px-3 text-xs text-slate-400 font-medium">Already have an account?</span>
+                </div>
+            </div>
+
+            <a asp-controller="Auth" asp-action="Login"
+               class="flex items-center justify-center gap-2 w-full rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold py-3 px-4 text-sm transition-all duration-200">
+                Sign in instead
+            </a>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const btn = document.getElementById('toggleRegPwd');
+    const pwd = document.getElementById('regPassword');
+    btn?.addEventListener('click', () => { pwd.type = pwd.type === 'password' ? 'text' : 'password'; });
+
+    const bar = document.getElementById('strengthBar');
+    const txt = document.getElementById('strengthText');
+    pwd?.addEventListener('input', () => {
+        const v = pwd.value;
+        let score = 0;
+        if (v.length >= 6)  score++;
+        if (v.length >= 10) score++;
+        if (/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+        if (/[0-9]/.test(v))  score++;
+        if (/[^A-Za-z0-9]/.test(v)) score++;
+        const map = [
+            ['w-0',    'bg-slate-300', ''],
+            ['w-1/5',  'bg-rose-400',  'Too weak'],
+            ['w-2/5',  'bg-orange-400','Weak'],
+            ['w-3/5',  'bg-amber-400', 'Fair'],
+            ['w-4/5',  'bg-lime-500',  'Good'],
+            ['w-full', 'bg-emerald-500','Strong'],
+        ];
+        const [w, c, l] = map[Math.min(score, 5)];
+        bar.className = `h-full rounded-full transition-all duration-300 ${w} ${c}`;
+        txt.textContent = l;
+        txt.className = `text-xs mt-1 ${c.replace('bg-','text-')}`;
+    });
+
+    const roleDescs = {
+        Student:      'Access your project allocation and supervisor matching.',
+        Supervisor:   'Manage your available projects and student allocations.',
+        ModuleLeader: 'Oversee module-wide project allocations and reports.',
+        Admin:        'Full system administration and user management.',
+    };
+    const sel  = document.querySelector('select[name="Role"]');
+    const desc = document.getElementById('roleDesc');
+    const updateDesc = () => { desc.textContent = roleDescs[sel.value] ?? ''; };
+    sel?.addEventListener('change', updateDesc);
+    updateDesc();
+</script>
+}

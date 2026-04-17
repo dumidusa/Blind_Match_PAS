@@ -23,7 +23,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Auth/Logout";
         options.AccessDeniedPath = "/Auth/AccessDenied";
     });
-
+builder.Services.AddAuthorization();
 var app = builder.Build();
 /*
 // Seed a test user due to  none exist yet

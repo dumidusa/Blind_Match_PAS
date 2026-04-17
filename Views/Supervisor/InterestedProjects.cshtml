@@ -1,0 +1,117 @@
+@{
+    ViewData["Title"] = "Interested Projects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var interests = ViewBag.Interests as List<BlindMatchPAS.Models.SupervisorInterest> ?? new();
+}
+
+@if (TempData["Success"] != null)
+{
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium">
+         @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-red-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium">
+         @TempData["Error"]
+    </div>
+}
+
+<div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4">
+        <div class="text-center mb-5">
+            <h3 class="text-lg font-bold text-slate-900">Confirm This Match?</h3>
+            <p class="text-slate-500 text-sm mt-2">
+                The student's identity will be <strong class="text-brand-700">permanently revealed</strong> to you and yours to them.
+                This cannot be undone. All other supervisors' interest in this project will be removed.
+            </p>
+        </div>
+        <form id="confirmForm" asp-action="ConfirmMatch" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="projectId" id="modalProjectId" />
+            <div class="flex gap-3">
+                <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">
+                     Yes, Confirm Match
+                </button>
+                <button type="button" onclick="closeModal()"
+                        class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors">
+                    Not Yet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+    <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+            <a asp-action="Index" class="text-sm text-brand-600 hover:underline">← Dashboard</a>
+            <h1 class="text-2xl font-bold text-slate-900 mt-1">Interested Projects</h1>
+            <p class="text-slate-500 text-sm mt-0.5">Projects you've flagged — confirm a match to reveal identities.</p>
+        </div>
+        <a asp-action="BrowseProjects" class="text-sm px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-colors">
+            + Browse More
+        </a>
+    </div>
+
+    @if (!interests.Any())
+    {
+        <div class="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-12 text-center">
+            <p class="text-slate-600 font-medium">No interests yet</p>
+            <p class="text-slate-400 text-sm mt-1">Go to the Blind Review Dashboard and express interest in projects that match your expertise.</p>
+            <a asp-action="BrowseProjects" class="mt-4 inline-block text-xs px-4 py-2 rounded-xl bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-colors">
+                 Browse Projects
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-4">
+            @foreach (var interest in interests)
+            {
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                    <div class="flex items-start justify-between gap-4 flex-wrap">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-slate-900 text-base">@interest.Project?.Title</h3>
+                            <span class="inline-flex mt-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
+                                @interest.Project?.ResearchArea?.Name
+                            </span>
+                            <p class="text-slate-500 text-sm mt-2 leading-relaxed">@interest.Project?.Abstract</p>
+                            <div class="mt-3 bg-slate-50 rounded-xl px-4 py-2 text-xs text-slate-500">
+                                <span class="font-semibold text-slate-700">Tech Stack:</span> @interest.Project?.TechStack
+                            </div>
+                            <div class="flex items-center gap-1.5 text-xs text-slate-400 mt-2">
+                                 Student identity still hidden &nbsp;·&nbsp; Interested @interest.CreatedAt.ToString("dd MMM yyyy")
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 shrink-0">
+                            <button onclick="openModal(@interest.ProjectId)"
+                                    class="px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors whitespace-nowrap">
+                                 Confirm Match
+                            </button>
+                            <form asp-action="WithdrawInterest" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="projectId" value="@interest.ProjectId" />
+                                <button type="submit"
+                                        class="w-full px-4 py-2 rounded-xl border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors">
+                                    ✕ Withdraw
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+function openModal(projectId) {
+    document.getElementById('modalProjectId').value = projectId;
+    document.getElementById('confirmModal').classList.remove('hidden');
+}
+function closeModal() {
+    document.getElementById('confirmModal').classList.add('hidden');
+}
+setTimeout(() => { const t = document.getElementById('toast'); if (t) t.style.display = 'none'; }, 4500);
+</script>

@@ -33,6 +33,7 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+// testing testing db and site , 
   /* [AllowAnonymous]
    public IActionResult SeedUser()
     {
@@ -49,6 +50,7 @@ public class HomeController : Controller
 
         return Content("User created");
     }*/
+    
    [AllowAnonymous]
     public IActionResult FixPassword()
  {

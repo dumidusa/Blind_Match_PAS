@@ -14,7 +14,6 @@ namespace BlindMatchPAS.Migrations
     [Migration("20260415052029_InitialCreate")]
     partial class InitialCreate
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

@@ -1,2 +1,26 @@
-<h2>Access Denied </h2>
-<p>You do not have permission to access this page.</p>
+ @{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-16">
+    <div class="text-center max-w-md">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-rose-100 mb-6">
+            <svg class="w-10 h-10 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-900 mb-3">Access Denied</h1>
+        <p class="text-slate-500 mb-8">You don't have permission to view this page. Please contact an administrator if you believe this is an error.</p>
+        <div class="flex items-center justify-center gap-3">
+            <a asp-controller="Auth" asp-action="Login"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-sm hover:bg-brand-700 transition-all">
+                Back to Login
+            </a>
+            <a asp-controller="Auth" asp-action="Logout"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-100 transition-all">
+                Sign Out
+            </a>
+        </div>
+    </div>
+</div>

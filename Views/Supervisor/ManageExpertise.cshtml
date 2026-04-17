@@ -1,0 +1,70 @@
+@{
+    ViewData["Title"] = "Manage Expertise";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var allAreas = ViewBag.AllAreas as List<BlindMatchPAS.Models.ResearchArea> ?? new();
+    var selectedIds = ViewBag.SelectedIds as List<int> ?? new();
+}
+
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+
+    @if (TempData["Success"] != null)
+    {
+        <div id="toast" class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+             @TempData["Success"]
+        </div>
+    }
+
+    <div class="mb-6">
+        <a asp-action="Index" class="text-sm text-brand-600 hover:underline">← Back to Dashboard</a>
+        <h1 class="text-2xl font-bold text-slate-900 mt-2">Manage Expertise Areas</h1>
+        <p class="text-slate-500 text-sm mt-1">Select the research areas that match your expertise. The Blind Review Dashboard will show projects filtered by these tags.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+        <form asp-action="SaveExpertise" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                @foreach (var area in allAreas)
+                {
+                    bool isSelected = selectedIds.Contains(area.Id);
+                    <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-colors
+                                  @(isSelected ? "bg-brand-50 border-brand-400" : "border-slate-200 hover:bg-slate-50")"
+                           id="label-@area.Id">
+                        <input type="checkbox"
+                               name="selectedAreaIds"
+                               value="@area.Id"
+                               @(isSelected ? "checked" : "")
+                               class="w-4 h-4 accent-brand-600"
+                               onchange="toggleLabel(this)" />
+                        <span class="text-sm font-medium text-slate-700">@area.Name</span>
+                    </label>
+                }
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="submit"
+                        class="px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">
+                     Save Expertise
+                </button>
+                <a asp-action="Index" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleLabel(checkbox) {
+    const label = document.getElementById('label-' + checkbox.value);
+    if (checkbox.checked) {
+        label.classList.add('bg-brand-50', 'border-brand-400');
+        label.classList.remove('border-slate-200');
+    } else {
+        label.classList.remove('bg-brand-50', 'border-brand-400');
+        label.classList.add('border-slate-200');
+    }
+}
+setTimeout(() => { const t = document.getElementById('toast'); if (t) t.style.display = 'none'; }, 4000);
+</script>

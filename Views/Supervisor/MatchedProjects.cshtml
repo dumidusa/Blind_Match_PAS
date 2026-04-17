@@ -1,0 +1,82 @@
+@{
+    ViewData["Title"] = "Confirmed Matches";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var matches = ViewBag.Matches as List<BlindMatchPAS.Models.SupervisorInterest> ?? new();
+}
+
+@if (TempData["Success"] != null)
+{
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium">
+         @TempData["Success"]
+    </div>
+}
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+    <div class="mb-6">
+        <a asp-action="Index" class="text-sm text-brand-600 hover:underline">← Dashboard</a>
+        <h1 class="text-2xl font-bold text-slate-900 mt-1">Confirmed Matches</h1>
+        <p class="text-slate-500 text-sm mt-0.5">Identities have been revealed for all projects below.</p>
+    </div>
+
+    @if (!matches.Any())
+    {
+        <div class="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-12 text-center">
+            <p class="text-slate-600 font-medium">No confirmed matches yet</p>
+            <p class="text-slate-400 text-sm mt-1">Go to <a asp-action="InterestedProjects" class="text-brand-600 hover:underline">Interested Projects</a> and confirm a match.</p>
+        </div>
+    }
+    else
+    {
+        <div class="space-y-5">
+            @foreach (var match in matches)
+            {
+                <div class="bg-white rounded-2xl border border-green-200 shadow-card p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
+                         IDENTITY REVEALED
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base mb-2"> Project</h3>
+                            <p class="font-semibold text-slate-800">@match.Project?.Title</p>
+                            <span class="inline-flex mt-1.5 px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
+                                @match.Project?.ResearchArea?.Name
+                            </span>
+                            <p class="text-slate-500 text-sm mt-2 leading-relaxed">@match.Project?.Abstract</p>
+                            <div class="mt-3 bg-slate-50 rounded-xl px-4 py-2 text-xs text-slate-500">
+                                <span class="font-semibold text-slate-700">Tech Stack:</span> @match.Project?.TechStack
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-5">
+                            <h3 class="font-bold text-green-800 text-sm mb-3 flex items-center gap-2">
+                                 Student Details <span class="text-green-600 text-xs font-normal">(Now Visible)</span>
+                            </h3>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-green-200 flex items-center justify-center text-green-800 font-bold text-sm">
+                                    @(match.Project?.Student?.FullName?.FirstOrDefault().ToString().ToUpper() ?? "?")
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-900 text-sm">@match.Project?.Student?.FullName</p>
+                                    <p class="text-xs text-slate-500">Student</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-slate-700">
+                                <a href="mailto:@match.Project?.Student?.Email" class="text-brand-600 hover:underline text-sm">
+                                    @match.Project?.Student?.Email
+                                </a>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-green-200 text-xs text-slate-400">
+                                Matched on @match.ConfirmedAt?.ToString("dd MMM yyyy 'at' HH:mm")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+setTimeout(() => { const t = document.getElementById('toast'); if (t) t.style.display = 'none'; }, 4500);
+</script>

@@ -1,3 +1,165 @@
-<h2>Welcome, Supervisor!</h2>
-<p>This is your dashboard.</p>
-<a href="/Auth/Logout">Logout</a>
+@{
+    ViewData["Title"] = "Supervisor Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var name = User.Identity?.Name ?? "Supervisor";
+    int matchedCount   = ViewBag.MatchedCount   ?? 0;
+    int interestedCount = ViewBag.InterestedCount ?? 0;
+    var expertiseAreas = ViewBag.ExpertiseAreas as List<string> ?? new List<string>();
+    var confirmedMatches = ViewBag.ConfirmedMatches as List<BlindMatchPAS.Models.SupervisorInterest> ?? new();
+}
+
+@if (TempData["Success"] != null)
+{
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 animate-fade-in">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div id="toast" class="fixed top-5 right-5 z-50 bg-red-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+         @TempData["Error"]
+    </div>
+}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <div class="rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 p-8 mb-8 relative overflow-hidden shadow-glass">
+        <div class="absolute right-0 top-0 w-64 h-64 rounded-full bg-white/5 -translate-y-1/2 translate-x-1/4"></div>
+        <div class="absolute right-20 bottom-0 w-40 h-40 rounded-full bg-white/5 translate-y-1/2"></div>
+        <div class="relative">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-semibold mb-3">
+                 Supervisor Portal
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white mb-1">Welcome back, @name</h1>
+            <p class="text-brand-100 text-sm">Review anonymous proposals and manage your matches from here.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="rounded-xl border bg-brand-50 border-brand-200 text-brand-700 p-5 flex items-start gap-4">
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide opacity-60">Confirmed Matches</p>
+                <p class="text-2xl font-bold mt-0.5">@matchedCount</p>
+            </div>
+        </div>
+        <div class="rounded-xl border bg-amber-50 border-amber-200 text-amber-700 p-5 flex items-start gap-4">
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide opacity-60">Interested In</p>
+                <p class="text-2xl font-bold mt-0.5">@interestedCount</p>
+            </div>
+        </div>
+        <div class="rounded-xl border bg-slate-50 border-slate-200 text-slate-600 p-5 flex items-start gap-4">
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide opacity-60">Expertise Areas</p>
+                <p class="text-2xl font-bold mt-0.5">@expertiseAreas.Count</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-slate-900">Recent Matches</h2>
+                    <a asp-action="MatchedProjects" class="text-xs px-3 py-1.5 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition-colors">View All</a>
+                </div>
+                @if (!confirmedMatches.Any())
+                {
+                    <div class="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-8 text-center">
+                        <p class="text-slate-600 text-sm font-medium">No confirmed matches yet</p>
+                        <p class="text-slate-400 text-xs mt-1">Browse projects and confirm a match to see student details revealed here.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="space-y-3">
+                        @foreach (var match in confirmedMatches.Take(3))
+                        {
+                            <div class="flex items-start justify-between p-4 rounded-xl bg-green-50 border border-green-200">
+                                <div>
+                                    <p class="font-semibold text-slate-900 text-sm">@match.Project?.Title</p>
+                                    <p class="text-xs text-slate-500 mt-0.5">Student: <span class="text-green-700 font-medium">@match.Project?.Student?.FullName</span></p>
+                                    <p class="text-xs text-slate-400">@match.Project?.ResearchArea?.Name</p>
+                                </div>
+                                <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-semibold whitespace-nowrap"> Matched</span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <h2 class="font-bold text-slate-900 mb-4">Browse Available Projects</h2>
+                <p class="text-slate-500 text-sm mb-4">Explore anonymised project proposals filtered by your expertise areas. Student identities are hidden until you confirm a match.</p>
+                <a asp-action="BrowseProjects"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">
+                     Open Blind Review Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <h2 class="font-bold text-slate-900 mb-4">My Profile</h2>
+                <div class="flex flex-col items-center text-center gap-3">
+                    <div class="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center text-2xl font-bold text-brand-700">
+                        @(name.Length > 0 ? name[0].ToString().ToUpper() : "S")
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-900">@name</p>
+                        <p class="text-xs text-slate-400">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
+                        <span class="inline-flex mt-2 px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-semibold">
+                                             Supervisor
+                        </span>                   
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="font-bold text-slate-900">My Expertise</h2>
+                    <a asp-action="ManageExpertise" class="text-xs text-brand-600 font-semibold hover:underline">Edit</a>
+                </div>
+                @if (!expertiseAreas.Any())
+                {
+                    <p class="text-slate-400 text-sm text-center py-3">No expertise set yet.</p>
+                    <a asp-action="ManageExpertise" class="mt-2 block w-full text-center text-xs px-3 py-2 rounded-lg border border-brand-300 text-brand-700 font-semibold hover:bg-brand-50 transition-colors">
+                        + Set Expertise Areas
+                    </a>
+                }
+                else
+                {
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (var area in expertiseAreas)
+                        {
+                            <span class="px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">@area</span>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+                <h2 class="font-bold text-slate-900 mb-3">Quick Actions</h2>
+                <nav class="space-y-1">
+                    <a asp-action="BrowseProjects" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700 font-medium transition-colors">
+                        Browse Projects
+                    </a>
+                    <a asp-action="InterestedProjects" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700 font-medium transition-colors">
+                         My Interested Projects
+                    </a>
+                    <a asp-action="MatchedProjects" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700 font-medium transition-colors">
+                         Confirmed Matches
+                    </a>
+                    <a asp-action="ManageExpertise" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700 font-medium transition-colors">
+                         Manage Expertise
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  setTimeout(() => { const t = document.getElementById('toast'); if (t) t.style.display = 'none'; }, 4000);
+</script>

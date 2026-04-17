@@ -4,6 +4,7 @@ using BlindMatchPAS.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlindMatchPAS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260416124158_AddProjectsAndResearchAreas")]
+    partial class AddProjectsAndResearchAreas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,64 +129,6 @@ namespace BlindMatchPAS.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BlindMatchPAS.Models.SupervisorExpertise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ResearchAreaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupervisorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ResearchAreaId");
-
-                    b.HasIndex("SupervisorId", "ResearchAreaId")
-                        .IsUnique();
-
-                    b.ToTable("SupervisorExpertises");
-                });
-
-            modelBuilder.Entity("BlindMatchPAS.Models.SupervisorInterest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ConfirmedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SupervisorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("SupervisorId", "ProjectId")
-                        .IsUnique();
-
-                    b.ToTable("SupervisorInterests");
-                });
-
             modelBuilder.Entity("BlindMatchPAS.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -238,44 +182,6 @@ namespace BlindMatchPAS.Migrations
                     b.Navigation("ResearchArea");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("BlindMatchPAS.Models.SupervisorExpertise", b =>
-                {
-                    b.HasOne("BlindMatchPAS.Models.ResearchArea", "ResearchArea")
-                        .WithMany()
-                        .HasForeignKey("ResearchAreaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlindMatchPAS.Models.User", "Supervisor")
-                        .WithMany()
-                        .HasForeignKey("SupervisorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ResearchArea");
-
-                    b.Navigation("Supervisor");
-                });
-
-            modelBuilder.Entity("BlindMatchPAS.Models.SupervisorInterest", b =>
-                {
-                    b.HasOne("BlindMatchPAS.Models.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlindMatchPAS.Models.User", "Supervisor")
-                        .WithMany()
-                        .HasForeignKey("SupervisorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Supervisor");
                 });
 #pragma warning restore 612, 618
         }
